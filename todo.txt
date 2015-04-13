@@ -1,0 +1,25 @@
++ Finir l'API cluster avec binding JEDIS
+    + service
+        connect
+        get All Cluster Name
+        Get All Noeud by Key
+        Update from a Cluster a Noeud
+        Remove a Noeud
+    + Mettre en place un test unitaire
+
++ Refaire le main pour prendre en argument le port
++ Donner le hostname
++ Mettre en place un système de random clusterName
+
++ handler de test
++ handler de stop
++ handler de start
+
++ thread d'heartbeat
++ thread de consommation d'URL de Tests
++ thread de refresh de noeuds de cluster
+
+
++ Prendre contacte avec PALIOT
++ Prendre contcate avec IBM
++ Prendre contact avec
