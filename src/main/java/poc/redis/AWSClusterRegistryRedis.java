@@ -17,9 +17,14 @@ public class AWSClusterRegistryRedis implements AWSClusterRegistry{
     Jedis jedis = null;
 
     @Override
-    public void connnect(String host, String port, String login, String password){
+    public void connect(String host, String port, String login, String password){
         jedis = new Jedis(host);
         //TODO add redis port
+    }
+
+    @Override
+    public void flushAll() {
+        jedis.flushAll();
     }
 
     @Override
@@ -30,7 +35,7 @@ public class AWSClusterRegistryRedis implements AWSClusterRegistry{
 
         //check if noeud already exists
         for (ClusterNoeud clusterNoeud : noeuds){
-            if(cluster.equals(clusterNoeud.getHostname())){
+            if(noeud.equals(clusterNoeud)){
                 clusterNoeud.setLastUpdate(Instant.now().getEpochSecond());
                 isUpdated = true;
                 break;
@@ -51,12 +56,12 @@ public class AWSClusterRegistryRedis implements AWSClusterRegistry{
     @Override
     public boolean removeNoeud(String cluster, ClusterNoeud noeud){
 
-        List<ClusterNoeud> noeuds = getNoeuds(String cluster);
+        List<ClusterNoeud> noeuds = getNoeuds(cluster);
 
         boolean isDeleted = false;
 
         for (ClusterNoeud clusterNoeud : noeuds){
-            if(cluster.equals(clusterNoeud.getHostname())){
+            if(noeud.equals(clusterNoeud)){
                 noeuds.remove(clusterNoeud);
                 isDeleted = true;
                 break;

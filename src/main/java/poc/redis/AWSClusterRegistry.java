@@ -8,7 +8,7 @@ import java.util.Set;
  */
 public interface AWSClusterRegistry {
 
-        public void connnect(String host, String port, String login, String password);
+        public void connect(String host, String port, String login, String password);
 
         public void pushNoeud(String cluster, ClusterNoeud clusterNoeud);
 
@@ -17,4 +17,6 @@ public interface AWSClusterRegistry {
         public List<ClusterNoeud> getNoeuds(String cluster);
 
         public Set<String> getClusters();
+
+        public void flushAll();
 }

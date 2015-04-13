@@ -13,7 +13,7 @@ public class AWSClusterRegistryFactory {
 
     private static AWSClusterRegistryFactory instance = new AWSClusterRegistryFactory();
 
-    public AWSClusterRegistryFactory getIntance(){
+    public static AWSClusterRegistryFactory getIntance(){
         return instance;
     }
 

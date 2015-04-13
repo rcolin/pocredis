@@ -37,6 +37,15 @@ public class ClusterNoeud {
         this.lastUpdate = lastUpdate;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        boolean isEquals = false;
+        ClusterNoeud cn = (ClusterNoeud)obj;
+        if(cn.getHostname().equals(this.getHostname()) && cn.getPort().equals(this.getPort()))
+            isEquals = true;
+        return isEquals;
+    }
+
     public String exportStrLine(){
 
         StringBuilder strBuilder = new StringBuilder();
