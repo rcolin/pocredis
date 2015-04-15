@@ -1,11 +1,8 @@
-package poc.redis;
-
-import sun.misc.IOUtils;
+package poc.clustering;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StringWriter;
 import java.net.URL;
 import java.net.URLConnection;
 

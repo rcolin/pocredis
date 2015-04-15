@@ -1,4 +1,4 @@
-package poc.redis;
+package poc.clustering;
 
 import redis.clients.jedis.Jedis;
 
@@ -6,6 +6,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by remi on 01/04/2015.
@@ -19,7 +21,7 @@ public class AWSClusterRegistryRedis implements AWSClusterRegistry{
     @Override
     public void connect(String host, String port, String login, String password){
         jedis = new Jedis(host);
-        //TODO add redis port
+        //TODO add clustering port
     }
 
     @Override
@@ -30,7 +32,7 @@ public class AWSClusterRegistryRedis implements AWSClusterRegistry{
     @Override
     public void pushNoeud(String cluster, ClusterNoeud noeud) {
 
-        List<ClusterNoeud> noeuds = getNoeuds(cluster);
+        CopyOnWriteArrayList<ClusterNoeud> noeuds = getNoeuds(cluster);
         boolean isUpdated = false;
 
         //check if noeud already exists
@@ -48,7 +50,7 @@ public class AWSClusterRegistryRedis implements AWSClusterRegistry{
             noeuds.add(noeud);
         }
 
-        //record all cluster in remote redis server
+        //record all cluster in remote clustering server
         recordClusterNoeuds(cluster, noeuds);
     }
 
@@ -56,7 +58,7 @@ public class AWSClusterRegistryRedis implements AWSClusterRegistry{
     @Override
     public boolean removeNoeud(String cluster, ClusterNoeud noeud){
 
-        List<ClusterNoeud> noeuds = getNoeuds(cluster);
+        CopyOnWriteArrayList<ClusterNoeud> noeuds = getNoeuds(cluster);
 
         boolean isDeleted = false;
 
@@ -69,7 +71,7 @@ public class AWSClusterRegistryRedis implements AWSClusterRegistry{
         }
 
         if(isDeleted) {
-            //record all cluster in remote redis server
+            //record all cluster in remote clustering server
             recordClusterNoeuds(cluster, noeuds);
         }
 
@@ -77,9 +79,9 @@ public class AWSClusterRegistryRedis implements AWSClusterRegistry{
     }
 
     @Override
-    public List<ClusterNoeud> getNoeuds(String cluster) {
+    public CopyOnWriteArrayList<ClusterNoeud> getNoeuds(String cluster) {
 
-        List<ClusterNoeud> clusterNoeuds = new ArrayList<ClusterNoeud>();
+        CopyOnWriteArrayList<ClusterNoeud> clusterNoeuds = new CopyOnWriteArrayList<ClusterNoeud>();
 
         String strCluster = jedis.get(cluster);
         if(!isEmpty(strCluster)) {
@@ -97,7 +99,7 @@ public class AWSClusterRegistryRedis implements AWSClusterRegistry{
 
     @Override
     public Set<String> getClusters(){
-        Set<String> clusters =jedis.keys("*");
+        Set<String> clusters = jedis.keys("*");
         return clusters;
     }
 
@@ -112,8 +114,20 @@ public class AWSClusterRegistryRedis implements AWSClusterRegistry{
             }
             strBuilder.append(clusterNoeud.exportStrLine());
         }
-        //record on redis server
+        //record on clustering server
         jedis.set(cluster, strBuilder.toString());
+    }
+
+    @Override
+    public ConcurrentHashMap<String, CopyOnWriteArrayList<ClusterNoeud>> getFullClusters() {
+        ConcurrentHashMap<String, CopyOnWriteArrayList<ClusterNoeud>> directory = new ConcurrentHashMap<String, CopyOnWriteArrayList<ClusterNoeud>>();
+        Set<String> clusterSet = getClusters();
+        if(clusterSet!=null & clusterSet.size() > 0) {
+            for (String cluster : clusterSet) {
+                directory.put(cluster, getNoeuds(cluster));
+            }
+        }
+        return directory;
     }
 
     private static boolean isEmpty(String str){

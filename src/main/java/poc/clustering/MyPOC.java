@@ -1,4 +1,4 @@
-package poc.redis;
+package poc.clustering;
 
 import redis.clients.jedis.Jedis;
 

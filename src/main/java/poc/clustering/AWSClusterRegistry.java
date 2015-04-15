@@ -1,7 +1,9 @@
-package poc.redis;
+package poc.clustering;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by remi on 01/04/2015.
@@ -14,9 +16,11 @@ public interface AWSClusterRegistry {
 
         public boolean removeNoeud(String cluster, ClusterNoeud clusterNoeud);
 
-        public List<ClusterNoeud> getNoeuds(String cluster);
+        public CopyOnWriteArrayList<ClusterNoeud> getNoeuds(String cluster);
 
         public Set<String> getClusters();
+
+        public ConcurrentHashMap<String, CopyOnWriteArrayList<ClusterNoeud>> getFullClusters();
 
         public void flushAll();
 }

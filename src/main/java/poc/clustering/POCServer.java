@@ -1,4 +1,4 @@
-package poc.redis;
+package poc.clustering;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -18,17 +18,20 @@ public class POCServer {
     public static void main(String[] args) throws Exception{
 
         HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
-        server.createContext("/test", new MyHandler());
+        server.createContext("/status", new MyHandler());
         server.setExecutor(null); // creates a default executor
         server.start();
     }
 
     static class MyHandler implements HttpHandler {
         public void handle(HttpExchange t) throws IOException {
-            String response = "Web server is up and running";
+            String response = "Service up and running";
             String query = t.getRequestURI().getQuery();
-            System.out.println(query);
-            System.out.println(queryToMap(query));
+            System.out.println("request received");
+            if(query != null)
+                System.out.println("Params : " + query);
+
+            //System.out.println(queryToMap(query));
             t.sendResponseHeaders(200, response.length());
             OutputStream os = t.getResponseBody();
             os.write(response.getBytes());

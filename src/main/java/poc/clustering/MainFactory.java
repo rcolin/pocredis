@@ -1,4 +1,4 @@
-package poc.redis;
+package poc.clustering;
 
 /**
  * Created by remi on 13/04/2015.
